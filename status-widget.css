@@ -1,0 +1,82 @@
+/* --- Live Status Widget --- */
+.status-widget {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-radius: 50px;
+    z-index: 990;
+    /* High z-index, but below cursor and modals */
+    /* Override glass-card default large padding for this specific widget */
+    padding: 10px 20px !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: default;
+}
+
+.status-widget:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 243, 255, 0.2);
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    background-color: #00ff00;
+    /* Neon Green */
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 10px #00ff00;
+}
+
+.status-dot::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border: 2px solid #00ff00;
+    border-radius: 50%;
+    animation: ping-green 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.status-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.status-title {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.status-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+@keyframes ping-green {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(2.5);
+        opacity: 0;
+    }
+}
+
+/* Responsiveness for Status Widget */
+@media (max-width: 768px) {
+    .status-widget {
+        bottom: 20px;
+        left: 20px;
+    }
+}

@@ -1,0 +1,1655 @@
+:root {
+    --bg-color: #050505;
+    --text-color: #ffffff;
+    --text-muted: #a0a0a0;
+    --neon-blue: #00f3ff;
+    --neon-purple: #bc13fe;
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    /* slightly increased opacity to fill space */
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-color);
+    /* Added subtle dot matrix pattern to eliminate dead space */
+    background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 30px 30px;
+    color: var(--text-color);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* Background Effects */
+.background-effects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+#webgl-canvas,
+#particle-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+#particle-canvas {
+    opacity: 0.7;
+}
+
+.glow-orb {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.4;
+    animation: float 20s infinite alternate linear;
+}
+
+.orb-1 {
+    top: -100px;
+    left: -100px;
+    background: radial-gradient(circle, var(--neon-purple), transparent 70%);
+}
+
+.orb-2 {
+    bottom: -150px;
+    right: -100px;
+    background: radial-gradient(circle, var(--neon-blue), transparent 70%);
+    animation-delay: -10s;
+}
+
+@keyframes float {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform: translate(100px, 100px) scale(1.1);
+    }
+
+    100% {
+        transform: translate(-50px, 150px) scale(0.9);
+    }
+}
+
+/* Glassmorphism Classes */
+.glass-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 15px 50px;
+    /* Reduced padding */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(5, 5, 5, 0.8);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 1px solid var(--glass-border);
+    z-index: 1000;
+}
+
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 40px;
+    /* Increased padding to make elements larger */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.neon-hover:hover {
+    transform: translateY(-5px);
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 10px rgba(0, 243, 255, 0.1);
+}
+
+/* Navigation */
+.logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.floating-music-btn {
+    position: fixed;
+    top: 90px;
+    /* Places it directly below the ~80px height glass nav */
+    left: 40px;
+    /* Aligns roughly below the Pekky.dev logo */
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--neon-purple), var(--neon-blue));
+    border: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+    z-index: 998;
+    /* Below nav but above content */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: music-pulse 2s infinite;
+    /* Initial pulse to draw attention */
+}
+
+.floating-music-btn:hover {
+    box-shadow: 0 0 30px rgba(188, 19, 254, 0.6);
+    transform: scale(1.1);
+}
+
+.floating-music-btn.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(0);
+    pointer-events: none;
+}
+
+@keyframes music-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(188, 19, 254, 0.5);
+    }
+
+    70% {
+        box-shadow: 0 0 0 15px rgba(188, 19, 254, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(188, 19, 254, 0);
+    }
+}
+
+.logo span {
+    color: var(--neon-purple);
+    text-shadow: 0 0 10px rgba(188, 19, 254, 0.5);
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+    /* Reduced gap */
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+.nav-links a:hover {
+    color: var(--text-color);
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* Sections General */
+section {
+    padding: 80px 40px;
+    /* Reduced padding */
+    min-height: auto;
+    /* Removed 100vh to fit elements closer together */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 1400px;
+    /* Increased max width for more expansive cards */
+    margin: 0 auto;
+}
+
+/* Bi-directional Scroll Fade Classes */
+.section-reveal {
+    opacity: 0;
+    transform: translateY(50px) scale(0.98);
+    transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: opacity, transform;
+}
+
+.section-reveal.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.section-title {
+    font-size: 3.5rem;
+    /* Larger title */
+    font-weight: 800;
+    margin-bottom: 30px;
+    /* Reduced margin */
+    text-align: center;
+}
+
+.section-title span {
+    background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+}
+
+/* Hero Section */
+.hero {
+    min-height: 90vh;
+    /* Keep hero prominent but not completely screen-filling */
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.hero-content {
+    flex: 1;
+}
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.glitch {
+    position: relative;
+    display: inline-block;
+    color: var(--text-color);
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.8;
+}
+
+.glitch::before {
+    left: 2px;
+    text-shadow: -2px 0 var(--neon-purple);
+    clip-path: inset(0);
+    animation: glitch-anim-1 2s infinite linear alternate-reverse;
+}
+
+.glitch::after {
+    left: -2px;
+    text-shadow: 2px 0 var(--neon-blue);
+    clip-path: inset(0);
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+    0% {
+        clip-path: inset(20% 0 80% 0);
+        transform: translate(-2px, 1px);
+    }
+
+    10% {
+        clip-path: inset(10% 0 10% 0);
+        transform: translate(2px, -1px);
+    }
+
+    20% {
+        clip-path: inset(80% 0 5% 0);
+        transform: translate(-2px, 2px);
+    }
+
+    30% {
+        clip-path: inset(50% 0 30% 0);
+        transform: translate(2px, -2px);
+    }
+
+    40% {
+        clip-path: inset(30% 0 50% 0);
+        transform: translate(-2px, 1px);
+    }
+
+    50% {
+        clip-path: inset(90% 0 10% 0);
+        transform: translate(2px, -1px);
+    }
+
+    60% {
+        clip-path: inset(10% 0 80% 0);
+        transform: translate(-2px, 2px);
+    }
+
+    70% {
+        clip-path: inset(40% 0 40% 0);
+        transform: translate(2px, -2px);
+    }
+
+    80% {
+        clip-path: inset(70% 0 20% 0);
+        transform: translate(-2px, 1px);
+    }
+
+    90% {
+        clip-path: inset(20% 0 70% 0);
+        transform: translate(2px, -1px);
+    }
+
+    100% {
+        clip-path: inset(50% 0 50% 0);
+        transform: translate(-2px, 2px);
+    }
+}
+
+@keyframes glitch-anim-2 {
+    0% {
+        clip-path: inset(10% 0 60% 0);
+        transform: translate(2px, -1px);
+    }
+
+    10% {
+        clip-path: inset(40% 0 20% 0);
+        transform: translate(-2px, 1px);
+    }
+
+    20% {
+        clip-path: inset(80% 0 5% 0);
+        transform: translate(2px, -2px);
+    }
+
+    30% {
+        clip-path: inset(20% 0 50% 0);
+        transform: translate(-2px, 2px);
+    }
+
+    40% {
+        clip-path: inset(60% 0 10% 0);
+        transform: translate(2px, -1px);
+    }
+
+    50% {
+        clip-path: inset(30% 0 40% 0);
+        transform: translate(-2px, 1px);
+    }
+
+    60% {
+        clip-path: inset(90% 0 5% 0);
+        transform: translate(2px, -2px);
+    }
+
+    70% {
+        clip-path: inset(10% 0 80% 0);
+        transform: translate(-2px, 2px);
+    }
+
+    80% {
+        clip-path: inset(50% 0 30% 0);
+        transform: translate(2px, -1px);
+    }
+
+    90% {
+        clip-path: inset(70% 0 10% 0);
+        transform: translate(-2px, 1px);
+    }
+
+    100% {
+        clip-path: inset(20% 0 60% 0);
+        transform: translate(2px, -2px);
+    }
+}
+
+.typing-container {
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+    /* Reduced margin */
+    min-height: 48px;
+}
+
+.cursor {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+/* --- Liquid Button Styles --- */
+.liquid-btn-wrapper {
+    text-decoration: none;
+    display: inline-block;
+}
+
+.liquid-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--neon-blue);
+}
+
+.liquid-button:hover {
+    transform: scale(1.05);
+}
+
+/* Sizes */
+.liquid-button.size-xl {
+    height: 48px;
+    padding: 0 32px;
+}
+
+.liquid-button.size-xl i {
+    font-size: 1rem;
+    margin-left: 5px;
+}
+
+/* Background layers that hold the massive multi-layered inset shadow */
+.liquid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    height: 100%;
+    width: 100%;
+    border-radius: 9999px;
+    /* full rounded */
+    transition: all 0.3s ease;
+}
+
+.liquid-bg.dark {
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.03),
+        0 2px 6px rgba(0, 0, 0, 0.08),
+        inset 3px 3px 0.5px -3.5px rgba(255, 255, 255, 0.09),
+        inset -3px -3px 0.5px -3.5px rgba(255, 255, 255, 0.85),
+        inset 1px 1px 1px -0.5px rgba(255, 255, 255, 0.6),
+        inset -1px -1px 1px -0.5px rgba(255, 255, 255, 0.6),
+        inset 0 0 6px 6px rgba(255, 255, 255, 0.12),
+        inset 0 0 2px 2px rgba(255, 255, 255, 0.06),
+        0 0 12px rgba(0, 243, 255, 0.25);
+}
+
+.liquid-bg.light {
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.03),
+        0 2px 6px rgba(0, 0, 0, 0.08),
+        inset 3px 3px 0.5px -3px rgba(0, 0, 0, 0.9),
+        inset -3px -3px 0.5px -3px rgba(0, 0, 0, 0.85),
+        inset 1px 1px 1px -0.5px rgba(0, 0, 0, 0.6),
+        inset -1px -1px 1px -0.5px rgba(0, 0, 0, 0.6),
+        inset 0 0 6px 6px rgba(0, 0, 0, 0.12),
+        inset 0 0 2px 2px rgba(0, 0, 0, 0.06),
+        0 0 12px rgba(255, 255, 255, 0.15);
+    color: var(--text-color);
+}
+
+.liquid-button:has(.liquid-bg.light) {
+    color: var(--text-color);
+}
+
+/* The element applying the SVG SVG displacement filter backdrop */
+.liquid-glass {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -10;
+    /* Put behind the liquid-bg visually but allows its filter to act on what's behind */
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 8px;
+    isolation: isolate;
+}
+
+/* The actual text content */
+.liquid-content {
+    position: relative;
+    pointer-events: none;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+}
+
+.hero-image-container {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.profile-placeholder {
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+    border: 2px solid rgba(0, 243, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 100px;
+    color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 50px rgba(188, 19, 254, 0.2), inset 0 0 30px rgba(0, 243, 255, 0.1);
+    animation: pulse 4s infinite alternate;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+    cursor: pointer;
+}
+
+.profile-pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: transform 0.4s ease;
+    z-index: 2;
+    /* Keeps image above some effects */
+    position: relative;
+}
+
+/* Base Rotating Dashed Border */
+.profile-placeholder::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    border: 1px dashed var(--neon-purple);
+    animation: spin 20s linear infinite;
+    opacity: 0.5;
+    transition: all 0.4s ease;
+    z-index: 1;
+}
+
+/* Hover: Overall Container Scale & Intense Glow */
+.profile-placeholder:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 80px rgba(0, 243, 255, 0.6), inset 0 0 50px rgba(188, 19, 254, 0.4);
+    animation: none;
+    /* Stop the slow pulse to emphasize hover */
+}
+
+/* Hover: Picture zooms in slightly */
+.profile-placeholder:hover .profile-pic {
+    transform: scale(1.1);
+}
+
+/* Hover: Dashed border rotates faster, thickens, and changes color */
+.profile-placeholder:hover::before {
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    border: 2px dashed var(--neon-blue);
+    opacity: 1;
+    animation: spin 8s linear infinite reverse;
+    /* Spin the other way, faster */
+    box-shadow: 0 0 20px var(--neon-blue);
+}
+
+/* Secondary Hover Particles/Ring */
+.profile-placeholder::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    opacity: 0;
+    transition: all 0.5s ease-out;
+    z-index: 0;
+}
+
+.profile-placeholder:hover::after {
+    width: calc(100% + 60px);
+    height: calc(100% + 60px);
+    border: 2px solid var(--neon-purple);
+    opacity: 0;
+    /* Fades out as it expands */
+    animation: ping-ring 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping-ring {
+    0% {
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0;
+    }
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 50px rgba(188, 19, 254, 0.2), inset 0 0 30px rgba(0, 243, 255, 0.1);
+    }
+
+    100% {
+        box-shadow: 0 0 80px rgba(0, 243, 255, 0.4), inset 0 0 50px rgba(188, 19, 254, 0.2);
+    }
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* About Section */
+.about-card {
+    text-align: center;
+    max-width: 1000px;
+    /* Increased max-width */
+    margin: 0 auto;
+    font-size: 1.4rem;
+    /* Larger text */
+    line-height: 1.8;
+}
+
+.highlight-blue {
+    color: var(--neon-blue);
+    text-shadow: 0 0 10px rgba(0, 243, 255, 0.6);
+    font-weight: 600;
+}
+
+.highlight-purple {
+    color: var(--neon-purple);
+    text-shadow: 0 0 10px rgba(188, 19, 254, 0.6);
+    font-weight: 600;
+}
+
+/* Skills Section */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    /* Larger base width */
+    gap: 15px;
+    /* Reduced gap */
+}
+
+.skill-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    /* Reduced gap */
+    padding: 50px 20px;
+    /* Larger padding */
+    font-size: 1.4rem;
+    /* Larger font */
+    font-weight: 600;
+}
+
+.skill-badge i {
+    font-size: 4rem;
+    /* Larger icon */
+    color: var(--neon-blue);
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.skill-badge:hover i {
+    transform: scale(1.2);
+    color: var(--neon-purple);
+}
+
+/* Projects Section */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+    /* Larger size */
+    gap: 20px;
+    /* Reduced gap */
+}
+
+.project-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.project-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--neon-blue), var(--neon-purple));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.project-card:hover::before {
+    opacity: 1;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(188, 19, 254, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(188, 19, 254, 0.1);
+}
+
+.project-content h3 {
+    font-size: 2rem;
+    /* Larger title */
+    margin-bottom: 10px;
+    /* Reduced margin */
+    color: #fff;
+}
+
+.project-content p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    /* Slightly larger paragraph */
+    margin-bottom: 15px;
+    /* Reduced margin */
+}
+
+.tech-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    /* Reduced gap */
+    margin-bottom: 20px;
+    /* Reduced margin */
+}
+
+.tag {
+    background: rgba(255, 255, 255, 0.08);
+    /* Slightly more visible background */
+    padding: 8px 18px;
+    /* Increased padding */
+    border-radius: 20px;
+    font-size: 1rem;
+    /* Marginally larger text */
+    color: var(--neon-blue);
+    border: 1px solid rgba(0, 243, 255, 0.3);
+}
+
+.project-link {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.3s ease;
+}
+
+.project-link:hover {
+    color: var(--neon-purple);
+}
+
+/* Achievements */
+.timeline {
+    position: relative;
+    max-width: 1000px;
+    /* Increased width */
+    margin: 0 auto;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20px;
+    height: 100%;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--neon-blue), var(--neon-purple));
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 50px;
+    /* Slightly closer */
+    margin-bottom: 20px;
+    /* Reduced spacing */
+}
+
+.timeline-dot {
+    position: absolute;
+    top: 20px;
+    left: 11px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--bg-color);
+    border: 3px solid var(--neon-blue);
+    box-shadow: 0 0 10px var(--neon-blue);
+    z-index: 1;
+}
+
+.timeline-item:hover .timeline-dot {
+    background: var(--neon-purple);
+    border-color: var(--neon-purple);
+    box-shadow: 0 0 15px var(--neon-purple);
+}
+
+.timeline-content h3 {
+    font-size: 1.8rem;
+    /* Larger text */
+    margin-bottom: 8px;
+    /* Reduced spacing */
+    color: var(--neon-purple);
+}
+
+.timeline-content p {
+    font-size: 1.1rem;
+    /* Larger text */
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 30px;
+    border-top: 1px solid var(--glass-border);
+    margin-top: 30px;
+    /* Reduced top margin */
+    background: rgba(5, 5, 5, 0.8);
+}
+
+.social-links {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-links a {
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--neon-blue);
+    transform: translateY(-3px);
+    text-shadow: 0 0 10px var(--neon-blue);
+}
+
+/* Scroll Animation Base: Cooler and Smoother Fade Ups */
+.section-reveal {
+    opacity: 0;
+    transform: translateY(60px) scale(0.98);
+    transition: opacity 1s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: opacity, transform;
+}
+
+.section-reveal.active {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* --- Forms & Inputs --- */
+.contact-card {
+    padding: 3rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.contact-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: flex-start;
+}
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    position: relative;
+    width: 100%;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    background: rgba(255, 255, 255, 0.05);
+    /* Increased contrast slightly */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* More visible border */
+    border-radius: 12px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+    /* Brighter placeholder */
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(255, 255, 255, 0.08);
+    /* Brighter focus */
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+}
+
+.form-group input:focus~.input-icon,
+.form-group textarea:focus~.input-icon {
+    color: var(--neon-blue);
+}
+
+.input-icon {
+    position: absolute;
+    top: 18px;
+    left: 18px;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+/* --- Interactive Hover Button (Contact Submit) --- */
+.interactive-hover-btn {
+    position: relative;
+    width: 100%;
+    /* Expand to fill bottom of the form naturally */
+    min-height: 55px;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 9999px;
+    /* full rounded */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    padding: 0.75rem 1rem;
+    text-align: center;
+    font-weight: 600;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 1.1rem;
+    transition: border-color var(--transition);
+    /* Flex layout to align contents */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Default Text State */
+.interactive-hover-btn-text {
+    display: inline-block;
+    transform: translateX(0.25rem);
+    /* translate-x-1 */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    z-index: 20;
+    /* Keep above scaling background */
+}
+
+/* Hover: Push text right and fade out */
+.interactive-hover-btn:hover .interactive-hover-btn-text {
+    transform: translateX(3rem);
+    /* translate-x-12 (approx) */
+    opacity: 0;
+}
+
+/* Hidden Text + Icon State */
+.interactive-hover-btn-reveal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    /* Resetting Tailwind's flex layout manually */
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    /* Keep above scaling background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    /* gap-2 */
+    color: #fff;
+    /* text-primary-foreground */
+    opacity: 0;
+    transform: translateX(3rem);
+    /* translate-x-12 */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover: Pull hidden text left and fade in */
+.interactive-hover-btn:hover .interactive-hover-btn-reveal {
+    transform: translateX(-0.1rem);
+    /* -translate-x-1 */
+    opacity: 1;
+}
+
+/* The Scaling Dot Background */
+.interactive-hover-btn-dot {
+    position: absolute;
+    left: 20%;
+    top: 40%;
+    height: 0.5rem;
+    /* h-2 */
+    width: 0.5rem;
+    /* w-2 */
+    border-radius: 9999px;
+    /* rounded-lg equivalent for small dot */
+    background-color: var(--primary);
+    /* bg-primary */
+    transform: scale(1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+    /* Behind text */
+}
+
+/* Hover: Dot expands to fill button */
+.interactive-hover-btn:hover .interactive-hover-btn-dot {
+    left: 0%;
+    top: 0%;
+    height: 100%;
+    width: 100%;
+    transform: scale(1.8);
+    background-color: var(--primary);
+}
+
+.contact-info {
+    flex: 1;
+    min-width: 300px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.contact-info h3 {
+    font-size: 2rem;
+    color: var(--neon-purple);
+    margin-bottom: 15px;
+}
+
+.contact-info p {
+    color: var(--text-muted);
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.contact-item i {
+    font-size: 1.5rem;
+    color: var(--neon-blue);
+}
+
+/* Scroll to Top Button */
+.scroll-top-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(188, 19, 254, 0.4);
+    z-index: 999;
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scroll-top-btn.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+}
+
+.scroll-top-btn:hover {
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.6);
+    transform: translateY(-5px);
+}
+
+/* --- Glow Effect System --- */
+/* Wrapper securely contains the absolute glow and relative card */
+.glow-effect-wrapper {
+    position: relative;
+    /* isolation: isolate keeps z-indexes scoped here */
+    isolation: isolate;
+}
+
+/* 
+ * Replicating the React GlowEffect component using CSS Variables
+ * Colors: ['#FF5733', '#33FF57', '#3357FF', '#F1C40F']
+ * Adapted to fit the site's neon theme
+ */
+.glow-effect {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    border-radius: inherit;
+    /* Scale multiplier to make glow leak out edges slightly */
+    transform: scale(1.02);
+    will-change: transform, background, opacity;
+    backface-visibility: hidden;
+}
+
+/* Blur Presets */
+.blur-soft {
+    filter: blur(4px);
+}
+
+.blur-medium {
+    filter: blur(12px);
+}
+
+.blur-strong {
+    filter: blur(24px);
+}
+
+/* Mode: colorShift (Rotating Conic Gradient) */
+.mode-colorShift {
+    background: conic-gradient(from 0deg at 50% 50%, var(--neon-blue), var(--neon-purple), var(--neon-blue));
+    animation: glow-spin 4s linear infinite;
+}
+
+@keyframes glow-spin {
+    0% {
+        transform: scale(1.05) rotate(0deg);
+    }
+
+    100% {
+        transform: scale(1.05) rotate(360deg);
+    }
+}
+
+/* Mode: pulse (Radial Gradient pulsing scale/opacity) */
+.mode-pulse {
+    background: radial-gradient(circle at 50% 50%, rgba(0, 243, 255, 0.8) 0%, transparent 80%);
+    animation: glow-pulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow-pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.4;
+    }
+
+    100% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* Mode: breathe (Radial Gradient subtle scaling) */
+.mode-breathe {
+    background: radial-gradient(circle at 50% 50%, rgba(188, 19, 254, 0.6) 0%, transparent 100%);
+    animation: glow-breathe 5s ease-in-out infinite alternate;
+}
+
+@keyframes glow-breathe {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1.05);
+    }
+}
+
+/* Mode: flowHorizontal (Linear Gradient shifting) */
+.mode-flowHorizontal {
+    background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-blue));
+    background-size: 200% 100%;
+    animation: glow-flow 4s linear infinite;
+}
+
+@keyframes glow-flow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: -200% 50%;
+    }
+}
+
+/* Ensure absolute paths properly clip or round over glow wrappers */
+/* Added highly polished glass card borders */
+.glow-effect-wrapper .glass-card {
+    background: rgba(5, 5, 5, 0.85);
+    /* Slightly darker so glow pops */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .glass-nav {
+        padding: 15px 20px;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        padding-top: 100px;
+        min-height: auto;
+    }
+
+    .hero-image-container {
+        margin-top: 30px;
+        justify-content: center;
+    }
+
+    .cta-buttons {
+        justify-content: center;
+    }
+
+    .profile-placeholder {
+        width: 180px;
+        height: 180px;
+        font-size: 50px;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+
+    .typing-container {
+        font-size: 1.5rem;
+    }
+
+    section {
+        padding: 60px 20px;
+    }
+
+    .glass-card {
+        padding: 25px;
+    }
+
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-card {
+        padding: 20px;
+    }
+
+    .contact-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .contact-info {
+        min-width: unset;
+        padding: 20px 0;
+    }
+}
+
+/* --- Custom Animated Cursor (Valorant Inspired) --- */
+@media (pointer: fine) {
+    * {
+        cursor: none !important;
+    }
+}
+
+.custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+    z-index: 99999;
+    /* Ensure it stays above the modal (z-index: 10000) */
+    will-change: transform;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.1s ease-out;
+    /* Slight lag for smooth feeling */
+}
+
+/* The central dot */
+.custom-cursor::before {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: var(--neon-blue);
+    box-shadow: 0 0 5px var(--neon-blue);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* The crosshair lines container */
+.crosshair-lines {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.15s ease-out;
+}
+
+/* Base style for the 4 lines */
+.crosshair-line {
+    position: absolute;
+    background-color: var(--neon-blue);
+    box-shadow: 0 0 4px var(--neon-blue);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Top line */
+.line-top {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 6px;
+}
+
+/* Bottom line */
+.line-bottom {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 6px;
+}
+
+/* Left line */
+.line-left {
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 2px;
+}
+
+/* Right line */
+.line-right {
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 2px;
+}
+
+/* Hover State (Expands and rotates slightly, changes color) */
+.custom-cursor.hover .custom-cursor::before {
+    transform: scale(0);
+    /* Hide center dot */
+}
+
+.custom-cursor.hover .crosshair-lines {
+    transform: rotate(45deg);
+    /* Spin to an 'X' */
+}
+
+.custom-cursor.hover .crosshair-line {
+    background-color: var(--neon-purple);
+    box-shadow: 0 0 6px var(--neon-purple);
+}
+
+/* Spread lines outwards on hover */
+.custom-cursor.hover .line-top {
+    top: -4px;
+}
+
+.custom-cursor.hover .line-bottom {
+    bottom: -4px;
+}
+
+.custom-cursor.hover .line-left {
+    left: -4px;
+}
+
+.custom-cursor.hover .line-right {
+    right: -4px;
+}
+
+/* Click State (Momentary recoil/shrink) */
+.custom-cursor.click .crosshair-lines {
+    transform: scale(0.6);
+}
+
+.custom-cursor.click.hover .crosshair-lines {
+    transform: rotate(45deg) scale(0.6);
+}
+
+@media (pointer: coarse) {
+    .custom-cursor {
+        display: none !important;
+    }
+}
+
+/* --- Custom Modal (Discord) --- */
+.custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 10000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.custom-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.custom-modal .modal-content {
+    position: relative;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    padding: 2rem;
+    transform: translateY(20px) scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.custom-modal.show .modal-content {
+    transform: translateY(0) scale(1);
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+    color: var(--neon-purple);
+}
+
+.modal-icon {
+    font-size: 3rem;
+    color: #5865F2;
+    /* Discord brand color */
+    margin-bottom: 15px;
+    text-shadow: 0 0 15px rgba(88, 101, 242, 0.6);
+}
+
+.custom-modal h3 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    color: var(--text-color);
+}
+
+.discord-id-container {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(88, 101, 242, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.discord-id-container:hover {
+    background: rgba(88, 101, 242, 0.1);
+    border-color: #5865F2;
+}
+
+.discord-id-container span {
+    font-family: monospace;
+    font-size: 1.2rem;
+    color: var(--text-color);
+    letter-spacing: 1px;
+}
+
+.copy-icon {
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+}
+
+.discord-id-container:hover .copy-icon {
+    color: #fff;
+}
+
+.copy-tooltip {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    min-height: 20px;
+    /* reserve space */
+    transition: color 0.3s ease;
+}
+
+.copy-tooltip.copied {
+    color: var(--neon-blue);
+    font-weight: bold;
+}
+
+/* --- Floating RPG Stats --- */
+.floating-stat {
+    position: fixed;
+    pointer-events: none;
+    /* Ignore clicks so it doesn't block the UI */
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--neon-purple);
+    text-shadow: 0 0 10px rgba(188, 19, 254, 0.8), -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+    /* White stroke for visibility */
+    z-index: 10000;
+    /* CSS Variables set by JS */
+    transform: translate(calc(-50% + var(--x-offset, 0px)), -50%);
+    animation: floatUp 1s ease-out forwards;
+}
+
+@keyframes floatUp {
+    0% {
+        opacity: 1;
+        transform: translate(calc(-50% + var(--x-offset, 0px)), -50%) scale(0.8);
+    }
+
+    30% {
+        transform: translate(calc(-50% + var(--x-offset, 0px)), -100%) scale(1.2);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--x-offset, 0px)), -200%) scale(1);
+    }
+}

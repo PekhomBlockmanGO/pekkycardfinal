@@ -1,0 +1,295 @@
+/* --- 3D Skills Orbit --- */
+.skills {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+    /* Prevent orbit from breaking layout horizontally */
+    padding-bottom: 120px;
+}
+
+.skills-container {
+    position: relative;
+    width: 600px;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 50px auto;
+    /* Creating a subtle 3D perspective effect */
+    transform-style: preserve-3d;
+    transform: perspective(1000px) rotateX(20deg);
+}
+
+.orbit-center {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    position: absolute;
+    z-index: 200;
+    /* Increased to sit above the orbital rings and canvases */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 50px rgba(188, 19, 254, 0.5), inset 0 0 20px rgba(0, 243, 255, 0.3);
+    border: 2px solid var(--neon-purple);
+    /* Counter-rotate the center so it doesn't look tilted from the perspective container */
+    transform: rotateX(-20deg);
+    cursor: pointer;
+    /* Show it's clickable */
+}
+
+.core-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    pointer-events: none;
+    /* Let the parent center div handle the clicks */
+}
+
+.orbit-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px dashed rgba(0, 243, 255, 0.3);
+    transform-style: preserve-3d;
+}
+
+/* Inner Ring */
+.ring-1 {
+    width: 300px;
+    height: 300px;
+    animation: spinRight 20s linear infinite;
+}
+
+/* Outer Ring */
+.ring-2 {
+    width: 500px;
+    height: 500px;
+    border-color: rgba(188, 19, 254, 0.3);
+    animation: spinLeft 30s linear infinite;
+}
+
+.orbit-planet {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    color: #fff;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Magic trick: Counter-rotate the planet icons so they always face upright */
+}
+
+/* Positioning Planets on the rings */
+/* Ring 1 (C, Java) */
+.planet-c {
+    top: -30px;
+    left: calc(50% - 30px);
+    animation: counterSpinRight 20s linear infinite;
+    box-shadow: 0 0 15px rgba(85, 107, 189, 0.6);
+}
+
+.planet-c i {
+    color: #556BBD;
+    font-weight: bold;
+    font-family: 'Outfit', sans-serif;
+    font-style: normal;
+}
+
+.planet-c i::before {
+    content: 'C';
+}
+
+.planet-java {
+    bottom: -30px;
+    left: calc(50% - 30px);
+    animation: counterSpinRight 20s linear infinite;
+    box-shadow: 0 0 15px rgba(220, 56, 14, 0.6);
+    color: #dc380e;
+}
+
+/* Ring 2 (HTML, CSS, JS) */
+.planet-html {
+    top: 20%;
+    left: -10px;
+    animation: counterSpinLeft 30s linear infinite;
+    box-shadow: 0 0 15px rgba(227, 79, 38, 0.6);
+    color: #E34F26;
+}
+
+.planet-css {
+    bottom: -20px;
+    left: calc(50% - 30px);
+    animation: counterSpinLeft 30s linear infinite;
+    box-shadow: 0 0 15px rgba(21, 114, 182, 0.6);
+    color: #1572B6;
+}
+
+.planet-js {
+    top: 20%;
+    right: -10px;
+    animation: counterSpinLeft 30s linear infinite;
+    box-shadow: 0 0 15px rgba(247, 223, 30, 0.6);
+    color: #F7DF1E;
+}
+
+.orbit-planet:hover {
+    box-shadow: 0 0 30px var(--neon-blue);
+    z-index: 100;
+}
+
+/* Pause animations on hover */
+.skills-container:hover .ring-1,
+.skills-container:hover .ring-2,
+.skills-container:hover .planet-c,
+.skills-container:hover .planet-java,
+.skills-container:hover .planet-html,
+.skills-container:hover .planet-css,
+.skills-container:hover .planet-js {
+    animation-play-state: paused;
+}
+
+/* Tooltips */
+.planet-tooltip {
+    position: absolute;
+    top: -40px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    font-family: 'Outfit', sans-serif;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    border: 1px solid var(--neon-blue);
+}
+
+.orbit-planet:hover .planet-tooltip {
+    opacity: 1;
+}
+
+/* Keyframes */
+@keyframes spinRight {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spinLeft {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(-360deg);
+    }
+}
+
+/* Counter-spin needs to undo the ring spin AND the perspective tilt (-20deg) */
+@keyframes counterSpinRight {
+    0% {
+        transform: rotate(0deg) rotateX(-20deg);
+    }
+
+    100% {
+        transform: rotate(-360deg) rotateX(-20deg);
+    }
+}
+
+@keyframes counterSpinLeft {
+    0% {
+        transform: rotate(0deg) rotateX(-20deg);
+    }
+
+    100% {
+        transform: rotate(360deg) rotateX(-20deg);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .skills-container {
+        width: 300px;
+        height: 300px;
+        transform: perspective(500px) rotateX(10deg);
+    }
+
+    .orbit-center {
+        transform: rotateX(-10deg);
+    }
+
+    .ring-1 {
+        width: 180px;
+        height: 180px;
+    }
+
+    .ring-2 {
+        width: 280px;
+        height: 280px;
+    }
+
+    .orbit-planet {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+
+    .planet-c {
+        top: -20px;
+        left: calc(50% - 22px);
+    }
+
+    .planet-java {
+        bottom: -20px;
+        left: calc(50% - 22px);
+    }
+
+    .planet-html {
+        top: 15%;
+        left: -10px;
+    }
+
+    .planet-css {
+        bottom: -15px;
+        left: calc(50% - 22px);
+    }
+
+    .planet-js {
+        top: 15%;
+        right: -10px;
+    }
+
+    @keyframes counterSpinRight {
+        0% {
+            transform: rotate(0deg) rotateX(-10deg);
+        }
+
+        100% {
+            transform: rotate(-360deg) rotateX(-10deg);
+        }
+    }
+
+    @keyframes counterSpinLeft {
+        0% {
+            transform: rotate(0deg) rotateX(-10deg);
+        }
+
+        100% {
+            transform: rotate(360deg) rotateX(-10deg);
+        }
+    }
+}

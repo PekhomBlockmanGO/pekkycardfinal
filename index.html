@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pekky | Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="preloader.css">
+    <link rel="stylesheet" href="status-widget.css">
+    <link rel="stylesheet" href="skills-orbit.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
+</head>
+
+<body>
+    <!-- Valorant Loading Screen -->
+    <div id="preloader">
+        <div class="loader-content">
+            <div class="loader-logo">Pekky<span>.dev</span></div>
+            <div class="loading-bar-container">
+                <div class="loading-bar"></div>
+            </div>
+            <div class="loading-text">LOADING ASSETS...</div>
+        </div>
+    </div>
+    <div class="background-effects">
+        <canvas id="webgl-canvas" class="fixed top-0 left-0 w-full h-full block"></canvas>
+        <canvas id="particle-canvas" class="fixed top-0 left-0 w-full h-full block z-10"></canvas>
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+    </div>
+
+
+    <!-- SVG Filters for Liquid Glass Button -->
+    <svg class="hidden" style="display: none;">
+        <defs>
+            <filter id="container-glass" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+                <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="1" seed="1"
+                    result="turbulence" />
+                <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise" />
+                <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="70" xChannelSelector="R"
+                    yChannelSelector="B" result="displaced" />
+                <feGaussianBlur in="displaced" stdDeviation="4" result="finalBlur" />
+                <feComposite in="finalBlur" in2="finalBlur" operator="over" />
+            </filter>
+        </defs>
+    </svg>
+
+    <!-- Navigation -->
+    <nav class="glass-nav">
+        <a href="#home" class="logo">Pekky.<span>dev</span></a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#achievements">Achievements</a></li>
+        </ul>
+    </nav>
+
+    <!-- Floating Start Music Button (Below Nav) -->
+    <button id="startMusicBtn" class="floating-music-btn">
+        <i class="fas fa-play"></i>
+    </button>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero section-reveal">
+        <div class="hero-content">
+            <h1 class="hero-title">Hi, I'm <span class="glitch" data-text="Jyosim">Jyosim</span></h1>
+            <h2 class="typing-container">
+                <span id="typing-text"></span><span class="cursor">&nbsp;</span>
+            </h2>
+            <div class="cta-buttons">
+                <!-- Apply Glow Effect to the primary CTA -->
+                <div class="glow-effect-wrapper p-1 rounded-xl">
+                    <div class="glow-effect mode-colorShift blur-strong"></div>
+                    <a href="javascript:void(0)" onclick="openResumeModal()" class="liquid-btn-wrapper relative z-10">
+                        <button class="liquid-button size-xl variant-default">
+                            <div class="liquid-bg dark"></div>
+                            <div class="liquid-glass"
+                                style='backdrop-filter: url("#container-glass"); -webkit-backdrop-filter: url("#container-glass");'>
+                            </div>
+                            <div class="liquid-content">Download Resume <i class="fas fa-download"></i></div>
+                        </button>
+                    </a>
+                </div>
+                <!-- Standard Liquid Button for secondary CTA -->
+                <a href="#projects" class="liquid-btn-wrapper">
+                    <button class="liquid-button size-xl variant-default">
+                        <div class="liquid-bg light"></div>
+                        <div class="liquid-glass"
+                            style='backdrop-filter: url("#container-glass"); -webkit-backdrop-filter: url("#container-glass");'>
+                        </div>
+                        <div class="liquid-content">View Work</div>
+                    </button>
+                </a>
+            </div>
+        </div>
+        <div class="hero-image-container">
+            <div class="profile-placeholder">
+                <img src="profile.gif" alt="Profile" class="profile-pic">
+            </div>
+        </div>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about" class="about section-reveal">
+        <h2 class="section-title">About <span>Me</span></h2>
+        <div class="about-card glass-card">
+            <p>Hi! I'm <span class="highlight-blue">Pekky</span>, a 1st-year <span class="highlight-purple">B.Tech
+                    CSE student</span> with a massive passion for building things from scratch. Whether I'm diving deep
+                into <span class="highlight-blue">C programming</span>, crafting <span
+                    class="highlight-purple">responsive
+                    web designs</span>, or unwinding with a few rounds of <span class="highlight-blue">Valorant</span>,
+                I'm always looking for ways to level up my skills. I love turning complex problems into <span
+                    class="highlight-purple">clean, interactive experiences</span>.
+            </p>
+        </div>
+    </section>
+
+
+    <!-- Skills Orbit Section -->
+    <section id="skills" class="skills section-reveal">
+        <h2 class="section-title">My <span>Arsenal</span></h2>
+
+        <div class="skills-container">
+            <div class="orbit-center glass-card neon-hover">
+                <img src="profile.gif" alt="Pekky" class="core-avatar">
+            </div>
+
+            <div class="orbit-ring ring-1">
+                <div class="orbit-planet planet-c">
+                    <i class="devicon-c-plain colored"></i>
+                    <span class="planet-tooltip">C Programming</span>
+                </div>
+                <div class="orbit-planet planet-java">
+                    <i class="fab fa-java"></i>
+                    <span class="planet-tooltip">Java</span>
+                </div>
+            </div>
+
+            <div class="orbit-ring ring-2">
+                <div class="orbit-planet planet-html">
+                    <i class="fab fa-html5"></i>
+                    <span class="planet-tooltip">HTML5</span>
+                </div>
+                <div class="orbit-planet planet-css">
+                    <i class="fab fa-css3-alt"></i>
+                    <span class="planet-tooltip">CSS3</span>
+                </div>
+                <div class="orbit-planet planet-js">
+                    <i class="fab fa-js"></i>
+                    <span class="planet-tooltip">JavaScript</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GitHub Projects Section -->
+    <section id="projects" class="projects section-reveal">
+        <h2 class="section-title">Featured <span>Projects</span></h2>
+        <div class="projects-grid">
+            <div class="glow-effect-wrapper rounded-[22px] p-[2px]" style="transition-delay: 0.1s;">
+                <div class="glow-effect mode-breathe blur-medium"></div>
+                <div class="project-card glass-card relative z-10 w-full h-full !m-0">
+                    <div class="project-content">
+                        <h3>Vizo</h3>
+                        <p>A multi-functional 'Super App' featuring an integrated text scanner, QR scanner, and custom
+                            UI.
+                        </p>
+                        <div class="tech-tags">
+                            <span class="tag">Android</span>
+                            <span class="tag">Java</span>
+                            <span class="tag">UI/UX</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link"><i class="fab fa-github"></i> Repository</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glow-effect-wrapper rounded-[22px] p-[2px]" style="transition-delay: 0.3s;">
+                <div class="glow-effect mode-breathe blur-medium"></div>
+                <div class="project-card glass-card relative z-10 w-full h-full !m-0">
+                    <div class="project-content">
+                        <h3>Neverno Complaint App</h3>
+                        <p>An internal employee complaint submission platform developed during my internship at Neverno.
+                        </p>
+                        <div class="tech-tags">
+                            <span class="tag">Full Stack</span>
+                            <span class="tag">Web App</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link"><i class="fas fa-lock"></i> Internal Project</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certifications & Achievements Section -->
+    <section id="achievements" class="achievements section-reveal">
+        <h2 class="section-title">Certifications & <span>Achievements</span></h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content glass-card neon-hover">
+                    <h3>Hackathon Participation</h3>
+                    <p>Competed in national level hackathons, building innovative solutions within 24-48 hours
+                        constraints.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content glass-card neon-hover">
+                    <h3>Internships</h3>
+                    <p>Gained practical experience working on real-world projects, collaborating with professional
+                        teams.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content glass-card neon-hover">
+                    <h3>Course Certificates</h3>
+                    <p>Completed intensive courses in Full Stack Development, Data Structures in C, and UI Design.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact section-reveal">
+        <h2 class="section-title">Get In <span>Touch</span></h2>
+        <div class="contact-card glass-card">
+            <div class="contact-content">
+                <form id="contact-form" class="contact-form" action="https://formsubmit.co/jyosimsen123@gmail.com"
+                    method="POST">
+                    <!-- Disable captcha optionally later, but leave active for first verification -->
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" required placeholder="Your Name">
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" required placeholder="Your Email">
+                        <i class="fas fa-envelope input-icon"></i>
+                    </div>
+                    <div class="form-group">
+                        <textarea id="message" name="message" required placeholder="Your Message" rows="5"></textarea>
+                        <i class="fas fa-comment-alt input-icon"></i>
+                    </div>
+                    <button type="submit" class="interactive-hover-btn">
+                        <span class="interactive-hover-btn-text">Send Message</span>
+                        <div class="interactive-hover-btn-reveal">
+                            <span>Send Message</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="interactive-hover-btn-dot"></div>
+                    </button>
+                </form>
+                <div class="contact-info">
+                    <h3>konnichiwa!</h3>
+                    <p>Whether you have a question or just want to say hi, I'll try my best to get back to you!</p>
+                    <div class="contact-details">
+                        <a href="mailto:jyosimsen123@gmail.com" class="contact-item neon-hover">
+                            <i class="fas fa-envelope"></i>
+                            <span>jyosimsen123@gmail.com</span>
+                        </a>
+                        <a href="#" class="contact-item neon-hover">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>India</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Pekky. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://github.com/PekkyDev" target="_blank" rel="noopener noreferrer"><i
+                    class="fab fa-github"></i></a>
+            <a href="https://www.instagram.com/_.jyosim?igsh=bTBjYjRmMmNieTRj" target="_blank"
+                rel="noopener noreferrer"><i class="fab fa-instagram"></i></a>
+            <a href="javascript:void(0)" onclick="openDiscordModal()" title="Click for Discord ID"><i
+                    class="fab fa-discord"></i></a>
+        </div>
+    </footer>
+
+    <!-- Live Status Widget -->
+    <div class="status-widget glass-card">
+        <div class="status-dot"></div>
+        <div class="status-text">
+            <span class="status-title">Online</span>
+            <span class="status-desc">Currently playing Valorant</span>
+        </div>
+    </div>
+
+    <!-- Custom Animated Cursor (Valorant Inspired) -->
+    <div class="custom-cursor">
+        <div class="crosshair-lines">
+            <div class="crosshair-line line-top"></div>
+            <div class="crosshair-line line-bottom"></div>
+            <div class="crosshair-line line-left"></div>
+            <div class="crosshair-line line-right"></div>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scrollToTopBtn" class="scroll-top-btn hidden">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Background Music Player -->
+    <audio id="bg-music" loop>
+        <source src="Suzume Ringtone Slowed Music Lofi  Anime  Download 👇 - Ringtones4u (mp3cut.net).mp3"
+            type="audio/mpeg">
+    </audio>
+
+    <!-- Custom Resume Modal -->
+    <div id="resumeModal" class="custom-modal">
+        <div class="modal-content glass-card neon-hover">
+            <button class="close-modal" onclick="closeResumeModal()"><i class="fas fa-times"></i></button>
+            <i class="fas fa-file-pdf modal-icon"
+                style="color: var(--neon-purple); text-shadow: 0 0 15px rgba(188, 19, 254, 0.6);"></i>
+            <h3>Resume Not Ready</h3>
+            <p style="color: var(--text-muted); margin-top: 10px;">My resume is currently being updated. Please check
+                back later!</p>
+        </div>
+    </div>
+
+    <!-- Custom Discord Modal -->
+    <div id="discordModal" class="custom-modal">
+        <div class="modal-content glass-card neon-hover">
+            <button class="close-modal" onclick="closeDiscordModal()"><i class="fas fa-times"></i></button>
+            <i class="fab fa-discord modal-icon"></i>
+            <h3>Discord ID</h3>
+            <div class="discord-id-container" onclick="copyDiscordId()">
+                <span id="discordIdText">og_pekky</span>
+                <i class="fas fa-copy copy-icon"></i>
+            </div>
+            <p id="copyTooltip" class="copy-tooltip">Click to copy!</p>
+        </div>
+    </div>
+
+    <!-- Load Three.js safely from CDN before our script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
