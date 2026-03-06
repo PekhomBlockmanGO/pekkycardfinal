@@ -31,7 +31,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 0 50px rgba(188, 19, 254, 0.5), inset 0 0 20px rgba(0, 243, 255, 0.3);
+    box-shadow: 0 0 50px rgba(0, 136, 0, 0.5), inset 0 0 20px rgba(0, 255, 0, 0.3);
     border: 2px solid var(--neon-purple);
     /* Counter-rotate the center so it doesn't look tilted from the perspective container */
     transform: rotateX(-20deg);
@@ -51,14 +51,17 @@
 .orbit-ring {
     position: absolute;
     border-radius: 50%;
-    border: 1px dashed rgba(0, 243, 255, 0.3);
+    border: 2px dashed rgba(0, 255, 0, 0.5);
+    /* Thicker and much more opaque */
     transform-style: preserve-3d;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.05), inset 0 0 20px rgba(0, 255, 0, 0.05);
 }
 
 /* Inner Ring */
 .ring-1 {
     width: 300px;
     height: 300px;
+    border-color: rgba(0, 255, 0, 0.6);
     animation: spinRight 20s linear infinite;
 }
 
@@ -66,7 +69,7 @@
 .ring-2 {
     width: 500px;
     height: 500px;
-    border-color: rgba(188, 19, 254, 0.3);
+    border-color: rgba(0, 136, 0, 0.6);
     animation: spinLeft 30s linear infinite;
 }
 
