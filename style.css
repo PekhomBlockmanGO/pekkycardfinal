@@ -1656,3 +1656,19 @@ footer {
         transform: translate(calc(-50% + var(--x-offset, 0px)), -200%) scale(1);
     }
 }
+
+/* --- Audio Visualizer --- */
+.audio-visualizer-canvas {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 100px;
+    z-index: 999;
+    /* High enough to be over background, under modals */
+    pointer-events: none;
+    /* Let clicks pass through to background */
+    opacity: 0.6;
+    /* Slight transparency so it blends nicely */
+    transition: opacity 0.5s ease;
+}

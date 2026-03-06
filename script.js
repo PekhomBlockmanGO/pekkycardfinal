@@ -763,14 +763,6 @@ document.addEventListener('DOMContentLoaded', () => {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             analyser = audioContext.createAnalyser();
 
-            // Web Audio API mutes local file:// media sources due to CORS. 
-            // If running locally, skip the visualizer routing so the music still plays.
-            if (window.location.protocol === 'file:') {
-                console.warn("Audio Visualizer is disabled on 'file:' protocol due to CORS restrictions. Music will play normally.");
-                isVisualizerInitialized = true; // Mark initialized so we don't try again
-                return;
-            }
-
             const source = audioContext.createMediaElementSource(bgMusic);
             source.connect(analyser);
             analyser.connect(audioContext.destination);
