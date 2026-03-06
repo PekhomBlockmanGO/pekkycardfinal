@@ -578,26 +578,6 @@ function copyDiscordId() {
     });
 }
 
-// --- Background Music Player (Top Left Button) ---
-document.addEventListener('DOMContentLoaded', () => {
-    const bgMusic = document.getElementById('bg-music');
-    const startMusicBtn = document.getElementById('startMusicBtn');
-
-    if (bgMusic && startMusicBtn) {
-        bgMusic.volume = 0.4;
-
-        startMusicBtn.addEventListener('click', () => {
-            bgMusic.play().then(() => {
-                setTimeout(() => {
-                    startMusicBtn.style.display = 'none';
-                }, 300); // Wait for CSS opacity transition to finish
-            }).catch(err => {
-                console.error("Audio playback failed:", err);
-            });
-        });
-    }
-});
-
 // --- Floating RPG Stats on Avatar Click ---
 document.addEventListener('DOMContentLoaded', () => {
     const avatar = document.querySelector('.orbit-center');
@@ -739,6 +719,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const startMusicBtn = document.getElementById('startMusicBtn');
     const visualizerCanvas = document.getElementById('audio-visualizer');
 
+    // Set initial volume
+    if (bgMusic) bgMusic.volume = 0.4;
+
     if (!bgMusic || !visualizerCanvas) return;
 
     const ctx = visualizerCanvas.getContext('2d');
@@ -787,10 +770,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         ctx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
 
-        // Get the current primary color from CSS variables (Neon Blue)
+        // Get the current primary color from CSS variables (Neon Blue/Green)
         const computedStyles = getComputedStyle(document.documentElement);
-        const barColor = computedStyles.getPropertyValue('--neon-blue').trim() || '#00f3ff';
-        const secColor = computedStyles.getPropertyValue('--neon-purple').trim() || '#bc13fe';
+        const barColor = computedStyles.getPropertyValue('--neon-blue').trim() || '#00ff00';
+        const secColor = computedStyles.getPropertyValue('--neon-purple').trim() || '#008800';
 
         const barWidth = (window.innerWidth / bufferLength) * 2.5;
         let barHeight;
@@ -812,14 +795,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Tie visualizer init to the existing play button
+    // Tie everything to the play button
     if (startMusicBtn) {
         startMusicBtn.addEventListener('click', () => {
+            // First time initialization
             if (!isVisualizerInitialized) {
                 initAudioVisualizer();
             } else if (audioContext && audioContext.state === 'suspended') {
                 audioContext.resume();
             }
+
+            // Play the actual music track
+            bgMusic.play().then(() => {
+                setTimeout(() => {
+                    startMusicBtn.style.display = 'none';
+                }, 300); // Wait for CSS opacity transition to finish
+            }).catch(err => {
+                console.error("Audio playback failed:", err);
+            });
         });
     }
 });
