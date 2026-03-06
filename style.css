@@ -1,4 +1,5 @@
 :root {
+    /* Default Theme (Neon) */
     --bg-color: #050505;
     --text-color: #ffffff;
     --text-muted: #a0a0a0;
@@ -7,6 +8,30 @@
     --glass-bg: rgba(255, 255, 255, 0.05);
     /* slightly increased opacity to fill space */
     --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="viper"] {
+    --bg-color: #050a05;
+    --text-color: #ffffff;
+    --text-muted: #80a080;
+    --neon-blue: #00ff00;
+    /* Toxic Green */
+    --neon-purple: #008800;
+    /* Darker Green */
+    --glass-bg: rgba(0, 255, 0, 0.03);
+    --glass-border: rgba(0, 255, 0, 0.1);
+}
+
+[data-theme="cyberpunk"] {
+    --bg-color: #0f0f0f;
+    --text-color: #ffffff;
+    --text-muted: #a09070;
+    --neon-blue: #fce205;
+    /* Cyber Yellow */
+    --neon-purple: #ff003c;
+    /* Cyber Red */
+    --glass-bg: rgba(252, 226, 5, 0.03);
+    --glass-border: rgba(252, 226, 5, 0.1);
 }
 
 * {

@@ -55,6 +55,11 @@
             <li><a href="#about">About</a></li>
             <li><a href="#projects">Projects</a></li>
             <li><a href="#achievements">Achievements</a></li>
+            <li>
+                <button id="themeToggleBtn" class="theme-toggle" title="Switch Theme">
+                    <i class="fas fa-palette"></i>
+                </button>
+            </li>
         </ul>
     </nav>
 
@@ -222,7 +227,7 @@
             </div>
             <div class="timeline-item">
                 <div class="timeline-dot"></div>
-                <div class="timeline-content glass-card neon-hover">
+                <div class="timeline-content glass-card neon-hover" onclick="openCertModal()" style="cursor: pointer;">
                     <h3>Course Certificates</h3>
                     <p>Completed intensive courses in Full Stack Development, Data Structures in C, and UI Design.</p>
                 </div>
@@ -319,6 +324,9 @@
             type="audio/mpeg">
     </audio>
 
+    <!-- Audio Visualizer Canvas -->
+    <canvas id="audio-visualizer" class="audio-visualizer-canvas"></canvas>
+
     <!-- Custom Resume Modal -->
     <div id="resumeModal" class="custom-modal">
         <div class="modal-content glass-card neon-hover">
@@ -342,6 +350,37 @@
                 <i class="fas fa-copy copy-icon"></i>
             </div>
             <p id="copyTooltip" class="copy-tooltip">Click to copy!</p>
+        </div>
+    </div>
+
+    <!-- Custom Certificate Modal -->
+    <div id="certModal" class="custom-modal">
+        <div class="modal-content glass-card neon-hover certificates-content">
+            <button class="close-modal" onclick="closeCertModal()"><i class="fas fa-times"></i></button>
+            <i class="fas fa-certificate modal-icon"
+                style="color: var(--neon-blue); text-shadow: 0 0 15px rgba(0, 243, 255, 0.6);"></i>
+            <h3>My Certificates</h3>
+            <div class="cert-list" style="margin-top: 20px; text-align: left;">
+                <div class="cert-item neon-hover" onclick="openSingleCert('dsa.jpg')"
+                    style="cursor: pointer; padding: 15px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); margin-bottom: 10px; display: flex; align-items: center; transition: all 0.3s ease; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <i class="fas fa-file-image"
+                        style="margin-right: 15px; color: var(--neon-blue); font-size: 1.5rem;"></i>
+                    <span style="font-size: 1.1rem; font-weight: 500;">Data Structures in C</span>
+                </div>
+                <!-- Future certificates can be added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Single Certificate Viewer Modal -->
+    <div id="singleCertModal" class="custom-modal" style="z-index: 10001; backdrop-filter: blur(10px);">
+        <div class="modal-content glass-card neon-hover"
+            style="max-width: 90vw; padding: 20px; text-align: center; position: relative;">
+            <button class="close-modal" onclick="closeSingleCert()"
+                style="position: absolute; right: 15px; top: 15px;"><i class="fas fa-times"></i></button>
+            <h3 id="certTitle" style="margin-bottom: 20px; color: var(--neon-blue);"></h3>
+            <img id="certImage" src="" alt="Certificate"
+                style="max-width: 100%; max-height: 70vh; border-radius: 10px; object-fit: contain; box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);">
         </div>
     </div>
 

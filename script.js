@@ -122,10 +122,53 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.innerHTML = '<span class="interactive-hover-btn-text" style="transform: translateX(0); color: #fff;">Redirecting... <i class="fas fa-spinner fa-spin"></i></span><div class="interactive-hover-btn-dot" style="left:0; top:0; height:100%; width:100%; transform:scale(1.8);"></div>';
             submitBtn.style.pointerEvents = 'none';
 
-            // Wait 1 second for the animation to play, then submit the form natively to FormSubmit
-            setTimeout(() => {
-                contactForm.submit();
-            }, 1000);
+            // Use fetch for AJAX submission so the page doesn't redirect
+            const formData = new FormData(contactForm);
+            const data = Object.fromEntries(formData);
+
+            fetch("https://formsubmit.co/ajax/jyosimsen123@gmail.com", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Success state
+                    submitBtn.innerHTML = '<span class="interactive-hover-btn-text" style="transform: translateX(0); color: #fff;">Sent Successfully! <i class="fas fa-check"></i></span><div class="interactive-hover-btn-dot" style="left:0; top:0; height:100%; width:100%; transform:scale(1.8); background-color: #00ff00;"></div>';
+                    contactForm.reset(); // Clear the form
+
+                    // Reset button after 3 seconds
+                    setTimeout(() => {
+                        submitBtn.style.pointerEvents = 'auto';
+                        submitBtn.innerHTML = `
+                        <span class="interactive-hover-btn-text">Send Message</span>
+                        <div class="interactive-hover-btn-reveal">
+                            <span>Send Message</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="interactive-hover-btn-dot"></div>
+                    `;
+                    }, 3000);
+                })
+                .catch(error => {
+                    console.log(error);
+                    submitBtn.innerHTML = '<span class="interactive-hover-btn-text" style="transform: translateX(0); color: #fff;">Error! Try Again <i class="fas fa-times"></i></span><div class="interactive-hover-btn-dot" style="left:0; top:0; height:100%; width:100%; transform:scale(1.8); background-color: #ff0000;"></div>';
+
+                    setTimeout(() => {
+                        submitBtn.style.pointerEvents = 'auto';
+                        submitBtn.innerHTML = `
+                        <span class="interactive-hover-btn-text">Send Message</span>
+                        <div class="interactive-hover-btn-reveal">
+                            <span>Send Message</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="interactive-hover-btn-dot"></div>
+                    `;
+                    }, 3000);
+                });
         });
     }
 
@@ -458,16 +501,62 @@ function closeResumeModal() {
     }
 }
 
+// --- Certificate Modal Functions ---
+function openCertModal() {
+    const modal = document.getElementById('certModal');
+    if (modal) {
+        modal.classList.add('show');
+    }
+}
+
+function closeCertModal() {
+    const modal = document.getElementById('certModal');
+    if (modal) {
+        modal.classList.remove('show');
+    }
+}
+
+function openSingleCert(imgSrc) {
+    const modal = document.getElementById('singleCertModal');
+    const img = document.getElementById('certImage');
+    const title = document.getElementById('certTitle');
+
+    if (modal && img) {
+        img.src = imgSrc;
+        if (imgSrc === 'dsa.jpg') title.innerText = 'Data Structures in C';
+        modal.classList.add('show');
+    }
+}
+
+function closeSingleCert() {
+    const modal = document.getElementById('singleCertModal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            const img = document.getElementById('certImage');
+            if (img) img.src = '';
+        }, 300); // Clear after animation
+    }
+}
+
 // Close modal if clicked completely outside
 window.addEventListener('click', (e) => {
     const discordModal = document.getElementById('discordModal');
     const resumeModal = document.getElementById('resumeModal');
+    const certModal = document.getElementById('certModal');
+    const singleCertModal = document.getElementById('singleCertModal');
 
     if (e.target === discordModal) {
         closeDiscordModal();
     }
     if (e.target === resumeModal) {
         closeResumeModal();
+    }
+    if (e.target === certModal) {
+        closeCertModal();
+    }
+    if (e.target === singleCertModal) {
+        closeSingleCert();
     }
 });
 
@@ -613,7 +702,11 @@ function triggerMatrixEffect() {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        ctx.fillStyle = '#0F0'; // Classic Hacker Green
+        // Get the current theme color for the matrix text
+        const computedStyles = getComputedStyle(document.documentElement);
+        const matrixColor = computedStyles.getPropertyValue('--neon-blue').trim() || '#0F0';
+
+        ctx.fillStyle = matrixColor;
         ctx.font = `${fontSize}px monospace`;
 
         for (let i = 0; i < drops.length; i++) {
@@ -639,3 +732,138 @@ function triggerMatrixEffect() {
         }, 1000); // Wait 1s for fade out CSS transition
     }, 4000);
 }
+
+// --- Theme Switcher Logic ---
+document.addEventListener('DOMContentLoaded', () => {
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themes = ['default', 'viper', 'cyberpunk'];
+    let currentThemeIndex = 0;
+
+    // Check localStorage for saved theme
+    const savedTheme = localStorage.getItem('pekky-theme');
+    if (savedTheme) {
+        currentThemeIndex = themes.indexOf(savedTheme);
+        if (currentThemeIndex === -1) currentThemeIndex = 0;
+        document.documentElement.setAttribute('data-theme', themes[currentThemeIndex]);
+    }
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const newTheme = themes[currentThemeIndex];
+
+            if (newTheme === 'default') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.removeItem('pekky-theme');
+            } else {
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('pekky-theme', newTheme);
+            }
+
+            // Optional: Small pop animation on toggle
+            themeToggleBtn.style.transform = 'scale(0.8)';
+            setTimeout(() => {
+                themeToggleBtn.style.transform = 'scale(1)';
+            }, 100);
+        });
+    }
+});
+
+// --- Audio Visualizer Logic (Web Audio API) ---
+document.addEventListener('DOMContentLoaded', () => {
+    const bgMusic = document.getElementById('bg-music');
+    const startMusicBtn = document.getElementById('startMusicBtn');
+    const visualizerCanvas = document.getElementById('audio-visualizer');
+
+    if (!bgMusic || !visualizerCanvas) return;
+
+    const ctx = visualizerCanvas.getContext('2d');
+    let audioContext, analyser, dataArray, bufferLength;
+    let isVisualizerInitialized = false;
+
+    // Resize canvas dynamically
+    const resizeVisualizer = () => {
+        visualizerCanvas.width = window.innerWidth;
+        // High DPI support for crispy bars
+        visualizerCanvas.height = 100 * window.devicePixelRatio;
+        visualizerCanvas.style.height = '100px';
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    };
+
+    window.addEventListener('resize', resizeVisualizer);
+    resizeVisualizer();
+
+    const initAudioVisualizer = () => {
+        try {
+            // Need user interaction to start AudioContext in most modern browsers
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+
+            // Web Audio API mutes local file:// media sources due to CORS. 
+            // If running locally, skip the visualizer routing so the music still plays.
+            if (window.location.protocol === 'file:') {
+                console.warn("Audio Visualizer is disabled on 'file:' protocol due to CORS restrictions. Music will play normally.");
+                isVisualizerInitialized = true; // Mark initialized so we don't try again
+                return;
+            }
+
+            const source = audioContext.createMediaElementSource(bgMusic);
+            source.connect(analyser);
+            analyser.connect(audioContext.destination);
+
+            analyser.fftSize = 128; // Determines number of frequency bins (bars)
+            bufferLength = analyser.frequencyBinCount;
+            dataArray = new Uint8Array(bufferLength);
+
+            isVisualizerInitialized = true;
+            drawVisualizer();
+        } catch (e) {
+            console.error("Audio Context initialization failed:", e);
+        }
+    };
+
+    const drawVisualizer = () => {
+        if (!isVisualizerInitialized) return;
+
+        requestAnimationFrame(drawVisualizer);
+
+        analyser.getByteFrequencyData(dataArray);
+
+        ctx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+
+        // Get the current primary color from CSS variables (Neon Blue)
+        const computedStyles = getComputedStyle(document.documentElement);
+        const barColor = computedStyles.getPropertyValue('--neon-blue').trim() || '#00f3ff';
+        const secColor = computedStyles.getPropertyValue('--neon-purple').trim() || '#bc13fe';
+
+        const barWidth = (window.innerWidth / bufferLength) * 2.5;
+        let barHeight;
+        let x = 0;
+
+        for (let i = 0; i < bufferLength; i++) {
+            barHeight = dataArray[i] / 2; // Scale height appropriately
+
+            // Create gradient for each bar
+            const grad = ctx.createLinearGradient(0, 100 - barHeight, 0, 100);
+            grad.addColorStop(0, barColor);
+            grad.addColorStop(1, secColor);
+
+            ctx.fillStyle = grad;
+            // Draw from bottom up
+            ctx.fillRect(x, 100 - barHeight, barWidth, barHeight);
+
+            x += barWidth + 2; // Space between bars
+        }
+    };
+
+    // Tie visualizer init to the existing play button
+    if (startMusicBtn) {
+        startMusicBtn.addEventListener('click', () => {
+            if (!isVisualizerInitialized) {
+                initAudioVisualizer();
+            } else if (audioContext && audioContext.state === 'suspended') {
+                audioContext.resume();
+            }
+        });
+    }
+});
