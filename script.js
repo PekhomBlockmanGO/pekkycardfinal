@@ -733,42 +733,6 @@ function triggerMatrixEffect() {
     }, 4000);
 }
 
-// --- Theme Switcher Logic ---
-document.addEventListener('DOMContentLoaded', () => {
-    const themeToggleBtn = document.getElementById('themeToggleBtn');
-    const themes = ['default', 'viper', 'cyberpunk'];
-    let currentThemeIndex = 0;
-
-    // Check localStorage for saved theme
-    const savedTheme = localStorage.getItem('pekky-theme');
-    if (savedTheme) {
-        currentThemeIndex = themes.indexOf(savedTheme);
-        if (currentThemeIndex === -1) currentThemeIndex = 0;
-        document.documentElement.setAttribute('data-theme', themes[currentThemeIndex]);
-    }
-
-    if (themeToggleBtn) {
-        themeToggleBtn.addEventListener('click', () => {
-            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-            const newTheme = themes[currentThemeIndex];
-
-            if (newTheme === 'default') {
-                document.documentElement.removeAttribute('data-theme');
-                localStorage.removeItem('pekky-theme');
-            } else {
-                document.documentElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('pekky-theme', newTheme);
-            }
-
-            // Optional: Small pop animation on toggle
-            themeToggleBtn.style.transform = 'scale(0.8)';
-            setTimeout(() => {
-                themeToggleBtn.style.transform = 'scale(1)';
-            }, 100);
-        });
-    }
-});
-
 // --- Audio Visualizer Logic (Web Audio API) ---
 document.addEventListener('DOMContentLoaded', () => {
     const bgMusic = document.getElementById('bg-music');
