@@ -725,7 +725,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!bgMusic || !visualizerCanvas) return;
 
     const ctx = visualizerCanvas.getContext('2d');
-    let audioContext, analyser, dataArray, bufferLength;
+    // Need user interaction to start AudioContext in most modern browsers
+    // We only want to create the MediaElementSource ONCE for the audio element
+    let audioContext, analyser, dataArray, bufferLength, source;
     let isVisualizerInitialized = false;
 
     // Resize canvas dynamically
@@ -742,17 +744,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const initAudioVisualizer = () => {
         try {
-            // Need user interaction to start AudioContext in most modern browsers
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioContext.createAnalyser();
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
 
-            const source = audioContext.createMediaElementSource(bgMusic);
-            source.connect(analyser);
-            analyser.connect(audioContext.destination);
+                source = audioContext.createMediaElementSource(bgMusic);
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
 
-            analyser.fftSize = 128; // Determines number of frequency bins (bars)
-            bufferLength = analyser.frequencyBinCount;
-            dataArray = new Uint8Array(bufferLength);
+                analyser.fftSize = 128; // Determines number of frequency bins (bars)
+                bufferLength = analyser.frequencyBinCount;
+                dataArray = new Uint8Array(bufferLength);
+            }
 
             isVisualizerInitialized = true;
             drawVisualizer();
@@ -772,27 +775,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Get the current primary color from CSS variables (Neon Blue/Green)
         const computedStyles = getComputedStyle(document.documentElement);
-        const barColor = computedStyles.getPropertyValue('--neon-blue').trim() || '#00ff00';
-        const secColor = computedStyles.getPropertyValue('--neon-purple').trim() || '#008800';
+        const primaryColor = computedStyles.getPropertyValue('--neon-blue').trim() || '#00ff00';
 
-        const barWidth = (window.innerWidth / bufferLength) * 2.5;
-        let barHeight;
-        let x = 0;
+        // We'll draw lines on left and right sides
+        // Calculate how much vertical space each frequency bin gets
+        const sliceHeight = visualizerCanvas.height / bufferLength;
 
+        // Draw Left Side Lines
+        ctx.beginPath();
         for (let i = 0; i < bufferLength; i++) {
-            barHeight = dataArray[i] / 2; // Scale height appropriately
+            const v = dataArray[i];
+            // Scale horizontal length (adjust multiplier as needed for impact)
+            const length = (v / 255) * (visualizerCanvas.width / 4);
 
-            // Create gradient for each bar
-            const grad = ctx.createLinearGradient(0, 100 - barHeight, 0, 100);
-            grad.addColorStop(0, barColor);
-            grad.addColorStop(1, secColor);
+            const y = i * sliceHeight;
 
-            ctx.fillStyle = grad;
-            // Draw from bottom up
-            ctx.fillRect(x, 100 - barHeight, barWidth, barHeight);
-
-            x += barWidth + 2; // Space between bars
+            ctx.moveTo(0, y);
+            ctx.lineTo(length, y);
         }
+        ctx.strokeStyle = primaryColor;
+        ctx.lineWidth = sliceHeight * 0.8; // Make lines thick enough but with slight gaps
+        ctx.stroke();
+
+        // Draw Right Side Lines
+        ctx.beginPath();
+        for (let i = 0; i < bufferLength; i++) {
+            const v = dataArray[i];
+            const length = (v / 255) * (visualizerCanvas.width / 4);
+
+            const y = i * sliceHeight;
+
+            ctx.moveTo(visualizerCanvas.width, y);
+            ctx.lineTo(visualizerCanvas.width - length, y);
+        }
+        ctx.strokeStyle = primaryColor;
+        // The stroke properties are already set
+        ctx.stroke();
     };
 
     // Tie everything to the play button

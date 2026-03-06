@@ -1660,15 +1660,15 @@ footer {
 /* --- Audio Visualizer --- */
 .audio-visualizer-canvas {
     position: fixed;
-    bottom: 0;
+    top: 0;
     left: 0;
     width: 100vw;
-    height: 100px;
-    z-index: 999;
-    /* High enough to be over background, under modals */
+    height: 100vh;
+    z-index: 10;
+    /* Keep it below modals (10000) and nav (1000) but above background */
     pointer-events: none;
     /* Let clicks pass through to background */
-    opacity: 0.6;
+    opacity: 0.8;
     /* Slight transparency so it blends nicely */
     transition: opacity 0.5s ease;
 }
