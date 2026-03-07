@@ -713,7 +713,7 @@ function triggerMatrixEffect() {
     }, 4000);
 }
 
-// --- Audio Visualizer Logic (Web Audio API) ---
+// --- Audio Visualizer Logic (Circular Ring on Profile Pic) ---
 document.addEventListener('DOMContentLoaded', () => {
     const bgMusic = document.getElementById('bg-music');
     const startMusicBtn = document.getElementById('startMusicBtn');
@@ -725,18 +725,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!bgMusic || !visualizerCanvas) return;
 
     const ctx = visualizerCanvas.getContext('2d');
-    // Need user interaction to start AudioContext in most modern browsers
-    // We only want to create the MediaElementSource ONCE for the audio element
     let audioContext, analyser, dataArray, bufferLength, source;
     let isVisualizerInitialized = false;
 
-    // Resize canvas dynamically
+    // Set canvas resolution (match CSS size for crisp rendering)
+    const CANVAS_SIZE = 450;
     const resizeVisualizer = () => {
-        visualizerCanvas.width = window.innerWidth;
-        // High DPI support for crispy bars
-        visualizerCanvas.height = 100 * window.devicePixelRatio;
-        visualizerCanvas.style.height = '100px';
-        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        const dpr = window.devicePixelRatio || 1;
+        visualizerCanvas.width = CANVAS_SIZE * dpr;
+        visualizerCanvas.height = CANVAS_SIZE * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     window.addEventListener('resize', resizeVisualizer);
@@ -752,7 +750,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 source.connect(analyser);
                 analyser.connect(audioContext.destination);
 
-                analyser.fftSize = 128; // Determines number of frequency bins (bars)
+                analyser.fftSize = 256; // More frequency bins for smoother circle
                 bufferLength = analyser.frequencyBinCount;
                 dataArray = new Uint8Array(bufferLength);
             }
@@ -771,46 +769,137 @@ document.addEventListener('DOMContentLoaded', () => {
 
         analyser.getByteFrequencyData(dataArray);
 
-        ctx.clearRect(0, 0, visualizerCanvas.width, visualizerCanvas.height);
+        ctx.clearRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-        // Get the current primary color from CSS variables (Neon Blue/Green)
-        const computedStyles = getComputedStyle(document.documentElement);
-        const primaryColor = computedStyles.getPropertyValue('--neon-blue').trim() || '#00ff00';
+        const centerX = CANVAS_SIZE / 2;
+        const centerY = CANVAS_SIZE / 2;
+        const baseRadius = 175; // Match the profile pic radius (350/2)
 
-        // We'll draw lines on left and right sides
-        // Calculate how much vertical space each frequency bin gets
-        const sliceHeight = visualizerCanvas.height / bufferLength;
-
-        // Draw Left Side Lines
-        ctx.beginPath();
+        // --- Smooth the frequency data by averaging neighbors ---
+        const smoothWindow = 8;
+        const smoothed = new Float32Array(bufferLength);
         for (let i = 0; i < bufferLength; i++) {
-            const v = dataArray[i];
-            // Scale horizontal length (adjust multiplier as needed for impact)
-            const length = (v / 255) * (visualizerCanvas.width / 4);
-
-            const y = i * sliceHeight;
-
-            ctx.moveTo(0, y);
-            ctx.lineTo(length, y);
+            let sum = 0;
+            let count = 0;
+            for (let j = -smoothWindow; j <= smoothWindow; j++) {
+                const idx = (i + j + bufferLength) % bufferLength;
+                sum += dataArray[idx];
+                count++;
+            }
+            smoothed[i] = sum / count;
         }
-        ctx.strokeStyle = primaryColor;
-        ctx.lineWidth = sliceHeight * 0.8; // Make lines thick enough but with slight gaps
-        ctx.stroke();
 
-        // Draw Right Side Lines
+        // We only use a subset of bins for the ring (too many = too noisy)
+        const numPoints = 64;
+        const step = Math.floor(bufferLength / numPoints);
+        const angleStep = (Math.PI * 2) / numPoints;
+
+        // Helper: get ring points for a given config
+        const getRingPoints = (maxDistortion, radiusOffset, dataOffset) => {
+            const points = [];
+            for (let i = 0; i < numPoints; i++) {
+                const dataIdx = ((i * step) + dataOffset) % bufferLength;
+                const angle = i * angleStep - Math.PI / 2;
+                const value = smoothed[dataIdx];
+                const distortion = (value / 255) * maxDistortion;
+                const r = baseRadius + radiusOffset + distortion;
+                points.push({
+                    x: centerX + r * Math.cos(angle),
+                    y: centerY + r * Math.sin(angle)
+                });
+            }
+            return points;
+        };
+
+        // Helper: draw a smooth closed curve through points using cubic bezier
+        const drawSmoothRing = (points) => {
+            const n = points.length;
+            ctx.beginPath();
+            // Start at the midpoint between last and first
+            const startX = (points[n - 1].x + points[0].x) / 2;
+            const startY = (points[n - 1].y + points[0].y) / 2;
+            ctx.moveTo(startX, startY);
+
+            for (let i = 0; i < n; i++) {
+                const current = points[i];
+                const next = points[(i + 1) % n];
+                const midX = (current.x + next.x) / 2;
+                const midY = (current.y + next.y) / 2;
+                ctx.quadraticCurveTo(current.x, current.y, midX, midY);
+            }
+
+            ctx.closePath();
+        };
+
+        // --- Layer 1: Main green ring (filled with gradient) ---
+        const greenPoints = getRingPoints(35, 0, 0);
+        drawSmoothRing(greenPoints);
+
+        // Create a radial gradient for the fill
+        const greenGrad = ctx.createRadialGradient(centerX, centerY, baseRadius - 5, centerX, centerY, baseRadius + 40);
+        greenGrad.addColorStop(0, 'rgba(0, 255, 0, 0.0)');
+        greenGrad.addColorStop(0.3, 'rgba(0, 255, 0, 0.15)');
+        greenGrad.addColorStop(0.7, 'rgba(0, 255, 0, 0.3)');
+        greenGrad.addColorStop(1, 'rgba(0, 255, 0, 0.0)');
+
+        ctx.fillStyle = greenGrad;
+        ctx.fill();
+
+        ctx.shadowBlur = 25;
+        ctx.shadowColor = '#00ff00';
+        ctx.strokeStyle = '#00ff00';
+        ctx.lineWidth = 3.5;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // --- Layer 2: Magenta/Pink accent ring (offset data) ---
+        const magentaPoints = getRingPoints(30, 3, Math.floor(bufferLength / 3));
+        drawSmoothRing(magentaPoints);
+
+        const magentaGrad = ctx.createRadialGradient(centerX, centerY, baseRadius - 5, centerX, centerY, baseRadius + 38);
+        magentaGrad.addColorStop(0, 'rgba(255, 0, 200, 0.0)');
+        magentaGrad.addColorStop(0.4, 'rgba(255, 0, 200, 0.12)');
+        magentaGrad.addColorStop(1, 'rgba(255, 0, 200, 0.0)');
+
+        ctx.fillStyle = magentaGrad;
+        ctx.fill();
+
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = '#ff00c8';
+        ctx.strokeStyle = 'rgba(255, 0, 200, 0.5)';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // --- Layer 3: Cyan accent ring (different offset) ---
+        const cyanPoints = getRingPoints(25, -2, Math.floor(bufferLength * 2 / 3));
+        drawSmoothRing(cyanPoints);
+
+        const cyanGrad = ctx.createRadialGradient(centerX, centerY, baseRadius - 5, centerX, centerY, baseRadius + 30);
+        cyanGrad.addColorStop(0, 'rgba(0, 255, 255, 0.0)');
+        cyanGrad.addColorStop(0.4, 'rgba(0, 255, 255, 0.1)');
+        cyanGrad.addColorStop(1, 'rgba(0, 255, 255, 0.0)');
+
+        ctx.fillStyle = cyanGrad;
+        ctx.fill();
+
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#00ffff';
+        ctx.strokeStyle = 'rgba(0, 255, 255, 0.35)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // --- Layer 4: Thin white base ring (always visible, holds shape) ---
         ctx.beginPath();
-        for (let i = 0; i < bufferLength; i++) {
-            const v = dataArray[i];
-            const length = (v / 255) * (visualizerCanvas.width / 4);
-
-            const y = i * sliceHeight;
-
-            ctx.moveTo(visualizerCanvas.width, y);
-            ctx.lineTo(visualizerCanvas.width - length, y);
-        }
-        ctx.strokeStyle = primaryColor;
-        // The stroke properties are already set
+        ctx.arc(centerX, centerY, baseRadius, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.5)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+        ctx.lineWidth = 1.5;
         ctx.stroke();
+        ctx.shadowBlur = 0;
     };
 
     // Tie everything to the play button
@@ -827,10 +916,11 @@ document.addEventListener('DOMContentLoaded', () => {
             bgMusic.play().then(() => {
                 setTimeout(() => {
                     startMusicBtn.style.display = 'none';
-                }, 300); // Wait for CSS opacity transition to finish
+                }, 300);
             }).catch(err => {
                 console.error("Audio playback failed:", err);
             });
         });
     }
 });
+

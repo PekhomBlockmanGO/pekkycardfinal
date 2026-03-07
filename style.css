@@ -572,6 +572,8 @@ section {
     flex: 1;
     display: flex;
     justify-content: flex-end;
+    overflow: visible;
+    /* Don't clip the visualizer ring */
 }
 
 .profile-placeholder {
@@ -588,6 +590,8 @@ section {
     box-shadow: 0 0 50px rgba(188, 19, 254, 0.2), inset 0 0 30px rgba(0, 243, 255, 0.1);
     animation: pulse 4s infinite alternate;
     position: relative;
+    overflow: visible;
+    /* Allow the circular visualizer ring to extend beyond */
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
     cursor: pointer;
 }
@@ -1657,18 +1661,17 @@ footer {
     }
 }
 
-/* --- Audio Visualizer --- */
+/* --- Audio Visualizer (Circular Ring on Profile) --- */
 .audio-visualizer-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 10;
-    /* Keep it below modals (10000) and nav (1000) but above background */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 450px;
+    /* Larger than the 350px profile pic so ring extends outside */
+    height: 450px;
+    z-index: 3;
+    /* Above the profile pic (z-index: 2) */
     pointer-events: none;
-    /* Let clicks pass through to background */
-    opacity: 0.8;
-    /* Slight transparency so it blends nicely */
-    transition: opacity 0.5s ease;
+    /* Let clicks pass through */
 }
